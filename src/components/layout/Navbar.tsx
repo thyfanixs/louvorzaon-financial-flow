@@ -1,6 +1,6 @@
 
 import { useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { 
   LayoutDashboard, 
   ArrowRightLeft, 
@@ -41,9 +41,17 @@ const navItems: NavItem[] = [
 export function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
 
   const toggleMobileMenu = () => {
     setMobileMenuOpen(!mobileMenuOpen);
+  };
+
+  const handleNavigation = (path: string) => {
+    navigate(path);
+    if (mobileMenuOpen) {
+      setMobileMenuOpen(false);
+    }
   };
 
   return (
@@ -77,6 +85,7 @@ export function Navbar() {
             variant="ghost"
             size="sm"
             className="w-full justify-start text-sm font-medium text-muted-foreground hover:bg-muted"
+            onClick={() => handleNavigation("/settings")}
           >
             <Settings className="mr-3 h-4 w-4" />
             Configurações
@@ -142,6 +151,7 @@ export function Navbar() {
                 variant="ghost"
                 size="sm"
                 className="w-full justify-start text-sm font-medium text-muted-foreground hover:bg-muted"
+                onClick={() => handleNavigation("/settings")}
               >
                 <Settings className="mr-3 h-4 w-4" />
                 Configurações
