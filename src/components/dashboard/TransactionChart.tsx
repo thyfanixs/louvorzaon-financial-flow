@@ -1,5 +1,5 @@
 
-import { useEffect, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
@@ -21,7 +21,7 @@ interface TransactionChartProps {
 }
 
 export default function TransactionChart({ data }: TransactionChartProps) {
-  const [chartType, setChartType] = React.useState("area");
+  const [chartType, setChartType] = useState("area");
   const chartRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -48,8 +48,8 @@ export default function TransactionChart({ data }: TransactionChartProps) {
     }
   }, []);
 
-  const formatNumberToK = (num: number) => {
-    return num >= 1000 ? `${(num / 1000).toFixed(1)}k` : num;
+  const formatNumberToK = (num: number): string => {
+    return num >= 1000 ? `${(num / 1000).toFixed(1)}k` : num.toString();
   };
 
   return (
@@ -90,7 +90,7 @@ export default function TransactionChart({ data }: TransactionChartProps) {
                 <XAxis dataKey="date" tick={{ fontSize: 12 }} />
                 <YAxis 
                   tick={{ fontSize: 12 }} 
-                  tickFormatter={formatNumberToK}
+                  tickFormatter={(value) => formatNumberToK(value)}
                 />
                 <Tooltip 
                   formatter={(value: number) => [`R$ ${value.toFixed(2)}`, undefined]}
@@ -139,7 +139,7 @@ export default function TransactionChart({ data }: TransactionChartProps) {
                 <XAxis dataKey="date" tick={{ fontSize: 12 }} />
                 <YAxis 
                   tick={{ fontSize: 12 }} 
-                  tickFormatter={formatNumberToK}
+                  tickFormatter={(value) => formatNumberToK(value)}
                 />
                 <Tooltip 
                   formatter={(value: number) => [`R$ ${value.toFixed(2)}`, undefined]}
