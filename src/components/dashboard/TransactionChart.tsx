@@ -22,16 +22,19 @@ interface TransactionChartProps {
 
 export default function TransactionChart({ data }: TransactionChartProps) {
   const [chartType, setChartType] = useState("area");
+  const [isVisible, setIsVisible] = useState(false);
   const chartRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (chartRef.current) {
+      // Definir como visível imediatamente para garantir que o gráfico apareça
+      setIsVisible(true);
+      
       const observer = new IntersectionObserver(
         (entries) => {
           entries.forEach((entry) => {
             if (entry.isIntersecting) {
-              entry.target.classList.add("opacity-100");
-              entry.target.classList.remove("opacity-0", "translate-y-4");
+              setIsVisible(true);
             }
           });
         },
@@ -64,7 +67,7 @@ export default function TransactionChart({ data }: TransactionChartProps) {
         </Tabs>
       </CardHeader>
       <CardContent className="p-2 h-80">
-        <div className="opacity-0 translate-y-4 transition-all duration-1000 h-full">
+        <div className={`transition-all duration-1000 h-full ${isVisible ? 'opacity-100' : 'opacity-0 translate-y-4'}`}>
           {chartType === "area" ? (
             <ResponsiveContainer width="100%" height="100%">
               <AreaChart
