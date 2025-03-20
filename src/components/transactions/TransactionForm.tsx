@@ -30,8 +30,8 @@ import {
 } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
 import { cn } from "@/lib/utils";
-import { mockCategories } from "@/utils/mockData";
 import { toast } from "@/hooks/use-toast";
+import { Transaction, TransactionCategory } from "@/types";
 
 const formSchema = z.object({
   amount: z.string().min(1, {
@@ -55,7 +55,12 @@ const formSchema = z.object({
 
 type FormValues = z.infer<typeof formSchema>;
 
-export default function TransactionForm() {
+interface TransactionFormProps {
+  categories: TransactionCategory[];
+  onAddTransaction: (transaction: Transaction) => void;
+}
+
+export default function TransactionForm({ categories, onAddTransaction }: TransactionFormProps) {
   const [isOpen, setIsOpen] = useState(false);
 
   const form = useForm<FormValues>({
@@ -69,8 +74,21 @@ export default function TransactionForm() {
   });
 
   function onSubmit(data: FormValues) {
-    // In a real app, we would save this to the database
-    console.log("Form data:", data);
+    // Create new transaction
+    const newTransaction: Transaction = {
+      id: `t${Date.now()}`,
+      amount: parseFloat(data.amount),
+      description: data.description,
+      date: data.date,
+      type: data.type,
+      category: data.category,
+      paymentMethod: data.paymentMethod,
+      note: data.note,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
+    
+    onAddTransaction(newTransaction);
     
     toast({
       title: "Transação registrada com sucesso!",
@@ -233,7 +251,7 @@ export default function TransactionForm() {
                             </SelectTrigger>
                           </FormControl>
                           <SelectContent>
-                            {mockCategories
+                            {categories
                               .filter(
                                 (category) =>
                                   category.type === form.watch("type")

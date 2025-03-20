@@ -29,12 +29,19 @@ import { Search, ArrowUpDown, MoreHorizontal, FileDown } from "lucide-react";
 import { Transaction, TransactionType } from "@/types";
 import { formatCurrency, getCategoryById } from "@/utils/mockData";
 import { cn } from "@/lib/utils";
+import { toast } from "@/hooks/use-toast";
 
 interface TransactionListProps {
   transactions: Transaction[];
+  onDeleteTransaction: (transactionId: string) => void;
+  onEditTransaction: (transaction: Transaction) => void;
 }
 
-export default function TransactionList({ transactions }: TransactionListProps) {
+export default function TransactionList({ 
+  transactions, 
+  onDeleteTransaction,
+  onEditTransaction
+}: TransactionListProps) {
   const [searchQuery, setSearchQuery] = useState("");
   const [filterType, setFilterType] = useState<TransactionType | "all">("all");
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
@@ -55,6 +62,23 @@ export default function TransactionList({ transactions }: TransactionListProps) 
       setSortBy(column);
       setSortOrder("desc");
     }
+  };
+
+  const handleDelete = (transactionId: string) => {
+    onDeleteTransaction(transactionId);
+    toast({
+      title: "Transação excluída",
+      description: "A transação foi removida com sucesso.",
+    });
+  };
+
+  const handleEdit = (transaction: Transaction) => {
+    // In a real app, this would open an edit form
+    // For now, we'll just show a toast message
+    toast({
+      title: "Função em desenvolvimento",
+      description: "A edição de transações será implementada em breve.",
+    });
   };
 
   const filteredTransactions = transactions.filter((transaction) => {
@@ -239,8 +263,13 @@ export default function TransactionList({ transactions }: TransactionListProps) 
                           </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
-                          <DropdownMenuItem>Editar</DropdownMenuItem>
-                          <DropdownMenuItem className="text-destructive">
+                          <DropdownMenuItem onClick={() => handleEdit(transaction)}>
+                            Editar
+                          </DropdownMenuItem>
+                          <DropdownMenuItem 
+                            className="text-destructive"
+                            onClick={() => handleDelete(transaction.id)}
+                          >
                             Excluir
                           </DropdownMenuItem>
                         </DropdownMenuContent>

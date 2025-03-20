@@ -6,11 +6,12 @@ import TransactionForm from "@/components/transactions/TransactionForm";
 import TransactionList from "@/components/transactions/TransactionList";
 import CategoryManager from "@/components/transactions/CategoryManager";
 import { mockTransactions, mockCategories } from "@/utils/mockData";
-import { TransactionCategory } from "@/types";
+import { Transaction, TransactionCategory } from "@/types";
 
 const Transactions = () => {
   const [activeTab, setActiveTab] = useState("transactions");
   const [categories, setCategories] = useState<TransactionCategory[]>(mockCategories);
+  const [transactions, setTransactions] = useState<Transaction[]>(mockTransactions);
 
   const handleAddCategory = (category: TransactionCategory) => {
     setCategories([...categories, category]);
@@ -26,6 +27,22 @@ const Transactions = () => {
 
   const handleDeleteCategory = (categoryId: string) => {
     setCategories(categories.filter((cat) => cat.id !== categoryId));
+  };
+
+  const handleAddTransaction = (transaction: Transaction) => {
+    setTransactions([...transactions, transaction]);
+  };
+
+  const handleEditTransaction = (updatedTransaction: Transaction) => {
+    setTransactions(
+      transactions.map((t) =>
+        t.id === updatedTransaction.id ? updatedTransaction : t
+      )
+    );
+  };
+
+  const handleDeleteTransaction = (transactionId: string) => {
+    setTransactions(transactions.filter((t) => t.id !== transactionId));
   };
 
   return (
@@ -49,8 +66,15 @@ const Transactions = () => {
         </TabsList>
         
         <TabsContent value="transactions" className="space-y-4">
-          <TransactionForm />
-          <TransactionList transactions={mockTransactions} />
+          <TransactionForm 
+            categories={categories}
+            onAddTransaction={handleAddTransaction}
+          />
+          <TransactionList 
+            transactions={transactions}
+            onDeleteTransaction={handleDeleteTransaction}
+            onEditTransaction={handleEditTransaction}
+          />
         </TabsContent>
         
         <TabsContent value="categories">
