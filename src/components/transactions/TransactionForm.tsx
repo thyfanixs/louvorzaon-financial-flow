@@ -31,7 +31,7 @@ import {
 import { Calendar } from "@/components/ui/calendar";
 import { cn } from "@/lib/utils";
 import { toast } from "@/hooks/use-toast";
-import { Transaction, TransactionCategory } from "@/types";
+import { Transaction, TransactionCategory, TransactionPaymentMethod } from "@/types";
 
 const formSchema = z.object({
   amount: z.string().min(1, {
@@ -47,8 +47,8 @@ const formSchema = z.object({
   category: z.string().min(1, {
     message: "A categoria é obrigatória.",
   }),
-  paymentMethod: z.string().min(1, {
-    message: "O método de pagamento é obrigatório.",
+  paymentMethod: z.enum(['cash', 'credit_card', 'debit_card', 'pix', 'bank_transfer', 'other'], {
+    required_error: "O método de pagamento é obrigatório.",
   }),
   note: z.string().optional(),
 });
@@ -82,7 +82,7 @@ export default function TransactionForm({ categories, onAddTransaction }: Transa
       date: data.date,
       type: data.type,
       category: data.category,
-      paymentMethod: data.paymentMethod,
+      paymentMethod: data.paymentMethod as TransactionPaymentMethod,
       note: data.note,
       createdAt: new Date(),
       updatedAt: new Date(),
